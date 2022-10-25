@@ -1,24 +1,28 @@
-import { User } from '../entities/user.entity';
 import {
   IsEmail,
+  IsNotEmpty,
   IsString,
   Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { regexHelper } from 'src/helpers/regex.helper';
+import { User } from '../entities/user.entity';
 
 export class CreateUserDto extends User {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(3)
+  name: string;
+
+  @IsNotEmpty()
   @IsEmail()
   email: string;
 
+  @IsNotEmpty()
   @IsString()
-  @MinLength(4)
+  @MinLength(8)
   @MaxLength(64)
-  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'password too weak',
-  })
+  @Matches(regexHelper.password, { message: 'Invalid email or password' })
   password: string;
-
-  @IsString()
-  name: string;
 }
